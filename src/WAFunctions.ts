@@ -1,22 +1,20 @@
-/*import pkg from 'whatsapp-web.js';
-const { Client, LocalAuth } = pkg;
+import { client } from "./config.js"
 import qrcode from 'qrcode-terminal'
-import { executeCommandOnMac } from './executor.js';
+import { executeCommandOnMac } from "./executor.js"
 
-const client = new Client({
-    authStrategy: new LocalAuth()
-});
+export const WAInitiateLogin = () => {
+    client.initialize();
 
-export const startAgent = () =>{
     client.on('qr', (qr)=> {
-        console.log('Scan this QR code with your phone to link WhatsApp');
+        console.log ('You are not logged into WhatsApp. Please login with QR Below: ')
         qrcode.generate(qr, {small: true})
     })
-
-    client.on('ready', () => {
-        console.log('Chirag is online and listening in WhatsApp')
+    client.on('ready', ()=>{
+        console.log ('Logged in Succesfully. You are ready to go!')
     })
-    //To be able to message yourself for testing
+}
+
+export const WAStartMonitoringChat = () => {
     client.on('message_create', async(msg) =>{
         console.log(`Message received from: ${msg.from}. Message: ${msg.body}`);
         const text = msg.body.toLowerCase();
@@ -38,13 +36,9 @@ export const startAgent = () =>{
             msg.reply('Action executed on Mac!');
         }
     })
+}
 
-
-
-    client.initialize();
-};
-
-export const stopAgent = () =>{
+export const WALogOut = () => {
     client.destroy();
-}   */
-
+    console.log('Client Logged Out')
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import {Command} from 'commander'
-import { startAgent, stopAgent } from './agent.js';
+import { WAInitiateLogin, WALogOut, WAStartMonitoringChat } from './WAFunctions.js';
 
 
 const program = new Command();
@@ -15,7 +15,10 @@ program
     .description('Starts Chirag up')
     .action(()=>{
         console.log('Hey! Chirag is now up and running. You can talk to me through whatsapp.');
-        startAgent();
+        console.log('Step 1: Checking if you are logged into WhatsApp');
+        WAInitiateLogin();
+        console.log('Step 2: Chirag is now monitoring inbox!')
+        WAStartMonitoringChat();
     })
 
 program
@@ -23,7 +26,7 @@ program
     .description('Shuts Chirag down')
     .action(()=>{
         console.log('Chirag is sleeping now...');
-        stopAgent();
+        WALogOut();
         process.exit(0);
     })
 
