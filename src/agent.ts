@@ -16,7 +16,7 @@ export const startAgent = () =>{
     client.on('ready', () => {
         console.log('Chirag is online and listening in WhatsApp')
     })
-
+    //To be able to message yourself for testing
     client.on('message_create', async(msg) =>{
         console.log(`Message received from: ${msg.from}. Message: ${msg.body}`);
         const text = msg.body.toLowerCase();
@@ -25,7 +25,6 @@ export const startAgent = () =>{
             await executeCommandOnMac(text);
             msg.reply('Action executed succesfully in Mac!')
         }else{
-            msg.reply('Unfortunately, I dont know this command');
             console.log('Couldnt parse the message/no open command given')
         }
     })
