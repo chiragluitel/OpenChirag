@@ -16,8 +16,6 @@ program
     .action(()=>{
         console.log('Hey! Chirag is now up and running. You can talk to me through whatsapp.');
         console.log('Step 1: Checking if you are logged into WhatsApp');
-        WAInitiateLogin();
-        console.log('Step 2: Chirag is now monitoring inbox!')
         WAStartMonitoringChat();
     })
 

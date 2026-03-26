@@ -1,6 +1,7 @@
 import { client } from "./config.js"
 import qrcode from 'qrcode-terminal'
 import { executeCommandOnMac } from "./executor.js"
+import { GetScriptFromLLM } from "./GetScriptFromLLM.js";
 
 export const WAInitiateLogin = () => {
     client.initialize();
@@ -11,30 +12,28 @@ export const WAInitiateLogin = () => {
     })
     client.on('ready', ()=>{
         console.log ('Logged in Succesfully. You are ready to go!')
+        console.log('Step 2: Chirag is now monitoring inbox! Send any message to WhatsApp')
     })
 }
 
 export const WAStartMonitoringChat = () => {
+    //Self
     client.on('message_create', async(msg) =>{
         console.log(`Message received from: ${msg.from}. Message: ${msg.body}`);
+        console.log(`Sending that over to LLM to decode now`)
         const text = msg.body.toLowerCase();
-
-        if(text.includes('open')){
-            await executeCommandOnMac(text);
-            msg.reply('Action executed succesfully in Mac!')
-        }else{
-            console.log('Couldnt parse the message/no open command given')
-        }
+        const script = await GetScriptFromLLM(text);
+        console.log(`Sending ----- ${script} ----- to be executed`)
+        await executeCommandOnMac(script);
     })
 
     client.on('message', async(msg)=>{
+        console.log(`Message received from: ${msg.from}. Message: ${msg.body}`);
+        console.log(`Sending that over to LLM to decode now`)
         const text = msg.body.toLowerCase();
-
-        //to implement NLP here
-        if(text.includes('open')){
-            await executeCommandOnMac(text);
-            msg.reply('Action executed on Mac!');
-        }
+        const script = await GetScriptFromLLM(text);
+        console.log(`Sending ----- ${script} ----- to be executed`)
+        await executeCommandOnMac(script);
     })
 }
 
