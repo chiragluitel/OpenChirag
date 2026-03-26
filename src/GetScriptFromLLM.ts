@@ -1,3 +1,4 @@
+import type { BotAction } from "./types.js";
 import { cleanLLMOutput } from "./utils.js";
 
 export const GetScriptFromLLM = async (userPrompt: string) => {
@@ -5,6 +6,7 @@ export const GetScriptFromLLM = async (userPrompt: string) => {
         method: 'POST',
         body: JSON.stringify({
             model: 'deepseek-r1:14b',
+            format: 'json',
             system: "You are a MacOS command-line generator. " + 
             "Return ONLY the valid AppleScript code requested. " + 
             "NO markdown, NO explanations, NO 'think' tags, NO quotes. " + 
@@ -18,7 +20,11 @@ export const GetScriptFromLLM = async (userPrompt: string) => {
     } )
 
     const data = await response.json();
-    const script = data.response.trim();
-    let cleanedScript = cleanLLMOutput(script)
-    return cleanedScript
+    const RawResponse = data.response;
+    
+    const jsonMatch = RawResponse.match(/\{[\s\S]*\}/)
+
+    if(!jsonMatch) throw new Error ("LLM Failed to Return JSON")
+
+    return JSON.parse(jsonMatch[0]) as BotAction;
 }
